@@ -3,9 +3,9 @@ const ctx = canvas.getContext("2d");
 
 const sideLength = 50;
 const rippleMaxAge = 120;
-const numOscillations = 5;
+const numOscillations = 15;
 const force = 30;
-const influenceRadius = 500;
+const influenceRadius = 1000;
 
 const horizontalMultiplier = Math.sin((2 * Math.PI) / 3);
 const minDim = Math.min(canvas.width, canvas.height);
@@ -19,19 +19,30 @@ const applyRipple = point => {
   const offset = ripples.reduce(
     (acc, curr) => {
       const hypotenuseSqr = (point.x - curr.x) ** 2 + (point.y - curr.y) ** 2;
-      const hypotenuse = Math.sqrt(hypotenuseSqr);
       if (hypotenuseSqr >= influenceRadius ** 2) return acc;
+
+      const hypotenuse = Math.sqrt(hypotenuseSqr);
+      const normalDir = {
+        x: (point.x - curr.x) / hypotenuse,
+        y: (point.y - curr.y) / hypotenuse
+      };
+      const agePercent = curr.age / rippleMaxAge;
+
       return {
         x:
           acc.x +
           force *
             (1 - hypotenuse / influenceRadius) *
-            Math.sin((numOscillations * curr.age) / rippleMaxAge),
+            normalDir.x *
+            Math.sin(numOscillations * agePercent) *
+            (1 - agePercent),
         y:
           acc.y +
           force *
             (1 - hypotenuse / influenceRadius) *
-            Math.cos((numOscillations * curr.age) / rippleMaxAge)
+            normalDir.y *
+            Math.sin(numOscillations * agePercent) *
+            (1 - agePercent)
       };
     },
     { x: 0, y: 0 }
