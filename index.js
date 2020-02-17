@@ -16,6 +16,8 @@ const rippleMaxAge = 120;
 const numOscillations = 15;
 const force = 30;
 const influenceRadius = 1000;
+const updateTps = 10;
+const drawTps = 60;
 
 const horizontalMultiplier = Math.sin((2 * Math.PI) / 3);
 const ripples = [];
@@ -104,16 +106,32 @@ function run() {
     }
   }
 
-  setTimeout(run, 1000 / 60);
+  setTimeout(run, 1000 / drawTps);
 }
 
 run();
 
-canvas.onclick = ev => {
+const plotRipplePoint = () => {
   const rect = canvas.getBoundingClientRect();
   ripples.push({
-    x: ev.clientX - rect.left,
-    y: ev.clientY - rect.top,
+    x: mousePos.x - rect.left,
+    y: mousePos.y - rect.top,
     age: 0
   });
 };
+
+let currInterval = null;
+const mousePos = {
+  x: 0,
+  y: 0
+};
+
+canvas.addEventListener("mousemove", ev => {
+  mousePos.x = ev.clientX;
+  mousePos.y = ev.clientY;
+});
+
+canvas.onmousedown = () =>
+  (currInterval = setInterval(plotRipplePoint, 1000 / updateTps));
+canvas.onmouseup = () => clearInterval(currInterval);
+canvas.onclick = () => plotRipplePoint();
