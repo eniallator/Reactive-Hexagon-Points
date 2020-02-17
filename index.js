@@ -1,6 +1,16 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+window.addEventListener(
+  "resize",
+  (resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  })
+);
+
+resize();
+
 const sideLength = 50;
 const rippleMaxAge = 120;
 const numOscillations = 15;
@@ -8,7 +18,6 @@ const force = 30;
 const influenceRadius = 1000;
 
 const horizontalMultiplier = Math.sin((2 * Math.PI) / 3);
-const minDim = Math.min(canvas.width, canvas.height);
 const ripples = [];
 const getHexGridPoint = point => ({
   x: (point.x + (point.y % 4 > 1) / 2) * sideLength * 2 * horizontalMultiplier,
@@ -53,6 +62,7 @@ const applyRipple = point => {
   };
 };
 const getPoint = (x, y) => applyRipple(getHexGridPoint({ x, y }));
+const minDim = Math.min(canvas.width, canvas.height);
 
 ctx.fillStyle = "black";
 ctx.strokeStyle = "white";
@@ -100,9 +110,10 @@ function run() {
 run();
 
 canvas.onclick = ev => {
+  const rect = canvas.getBoundingClientRect();
   ripples.push({
-    x: ev.clientX,
-    y: ev.clientY,
+    x: ev.clientX - rect.left,
+    y: ev.clientY - rect.top,
     age: 0
   });
 };
