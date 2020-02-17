@@ -38,22 +38,15 @@ const applyRipple = point => {
         y: (point.y - curr.y) / hypotenuse
       };
       const agePercent = curr.age / rippleMaxAge;
+      const rippleOffsetMultiplier =
+        force *
+        (1 - hypotenuse / influenceRadius) *
+        Math.sin(numOscillations * agePercent) *
+        (1 - agePercent);
 
       return {
-        x:
-          acc.x +
-          force *
-            (1 - hypotenuse / influenceRadius) *
-            normalDir.x *
-            Math.sin(numOscillations * agePercent) *
-            (1 - agePercent),
-        y:
-          acc.y +
-          force *
-            (1 - hypotenuse / influenceRadius) *
-            normalDir.y *
-            Math.sin(numOscillations * agePercent) *
-            (1 - agePercent)
+        x: acc.x + normalDir.x * rippleOffsetMultiplier,
+        y: acc.y + normalDir.y * rippleOffsetMultiplier
       };
     },
     { x: 0, y: 0 }
