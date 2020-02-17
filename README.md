@@ -1,3 +1,3 @@
-# Web-Animation-Template
+# Reactive Hexagon Points
 
-My template repository for creating web animations
+Connected points that form hexagons and when clicked, move around.
