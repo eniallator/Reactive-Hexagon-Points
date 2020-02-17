@@ -64,11 +64,10 @@ const applyRipple = point => {
   };
 };
 const getPoint = (x, y) => applyRipple(getHexGridPoint({ x, y }));
-const minDim = Math.min(canvas.width, canvas.height);
 
 ctx.fillStyle = "black";
 ctx.strokeStyle = "white";
-ctx.lineWidth = minDim / 108;
+ctx.lineWidth = 7;
 
 function run() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
