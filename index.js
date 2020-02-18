@@ -1,6 +1,18 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+const sideLength = 50;
+const paddingHexNum = 5;
+
+const rippleMaxAge = 2000;
+let lastTimeStamp = new Date().getTime();
+const numOscillations = 15;
+const force = 30;
+const influenceRadius = 1000;
+
+const updateTimeInterval = 100;
+let updateTimePassed = 0;
+
 window.addEventListener(
   "resize",
   (resize = () => {
@@ -34,18 +46,6 @@ canvas.ontouchmove = ev => {
 canvas.onmousedown = canvas.ontouchstart = () => (mouse.down = true);
 canvas.onmouseup = canvas.ontouchend = () => (mouse.down = false);
 canvas.onclick = () => plotRipplePoint();
-
-const sideLength = 50;
-const paddingHexNum = 5;
-
-const rippleMaxAge = 2000;
-let lastTimeStamp = new Date().getTime();
-const numOscillations = 15;
-const force = 30;
-const influenceRadius = 1000;
-
-const updateTimeInterval = 100;
-let updateTimePassed = 0;
 
 const horizontalMultiplier = Math.sin((2 * Math.PI) / 3);
 const ripples = [];
