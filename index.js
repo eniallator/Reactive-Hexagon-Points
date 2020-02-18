@@ -12,17 +12,25 @@ window.addEventListener(
 resize();
 
 const sideLength = 50;
+const paddingHexNum = 5;
+
 const rippleMaxAge = 120;
 const numOscillations = 15;
 const force = 30;
 const influenceRadius = 1000;
+
 const updateTps = 10;
 const drawTps = 60;
 
 const horizontalMultiplier = Math.sin((2 * Math.PI) / 3);
 const ripples = [];
+const posMod = (a, b) => ((a % b) + b) % b;
 const getHexGridPoint = point => ({
-  x: (point.x + (point.y % 4 > 1) / 2) * sideLength * 2 * horizontalMultiplier,
+  x:
+    (point.x + (posMod(point.y, 4) > 1) / 2) *
+    sideLength *
+    2 *
+    horizontalMultiplier,
   y: (point.y - ~~(point.y / 2) / 2) * sideLength
 });
 
@@ -65,15 +73,19 @@ ctx.lineWidth = 7;
 function run() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  for (let i = 0; i < (canvas.height * 3) / (2 * sideLength); i += 2) {
+  for (
+    let i = -paddingHexNum;
+    i < (canvas.height * 3) / (2 * sideLength) + paddingHexNum;
+    i += 2
+  ) {
     for (
-      let j = 0;
-      j < canvas.width / (sideLength * horizontalMultiplier);
+      let j = -paddingHexNum;
+      j < canvas.width / (sideLength * horizontalMultiplier) + paddingHexNum;
       j++
     ) {
       const offset = {
-        x: 2 * (i % 4 <= 1) - 1,
-        y: (i % 2) * 2 - 1
+        x: 2 * (posMod(i, 4) <= 1) - 1,
+        y: posMod(i, 2) * 2 - 1
       };
       const point = getPoint(j, i);
       const otherPointsArray = [
