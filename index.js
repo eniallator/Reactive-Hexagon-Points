@@ -2,16 +2,16 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const sideLength = 50;
-const paddingHexNum = 5;
+const numPaddingHex = 5;
 
 const rippleMaxAge = 2000;
-let lastTimeStamp = new Date().getTime();
 const numOscillations = 15;
 const force = 30;
 const influenceRadius = 1000;
-
 const updateTimeInterval = 100;
+
 let updateTimePassed = 0;
+let lastTimeStamp = new Date().getTime();
 
 window.addEventListener(
   "resize",
@@ -95,13 +95,13 @@ function run() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   for (
-    let i = -paddingHexNum;
-    i < (canvas.height * 3) / (2 * sideLength) + paddingHexNum;
+    let i = -numPaddingHex;
+    i < (canvas.height * 3) / (2 * sideLength) + numPaddingHex;
     i += 2
   ) {
     for (
-      let j = -paddingHexNum;
-      j < canvas.width / (sideLength * horizontalMultiplier) + paddingHexNum;
+      let j = -numPaddingHex;
+      j < canvas.width / (sideLength * horizontalMultiplier) + numPaddingHex;
       j++
     ) {
       const offset = {
