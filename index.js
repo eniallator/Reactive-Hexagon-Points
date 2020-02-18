@@ -27,8 +27,12 @@ canvas.onmousemove = ev => {
   mouse.pos.x = ev.clientX;
   mouse.pos.y = ev.clientY;
 };
-canvas.onmousedown = () => (mouse.down = true);
-canvas.onmouseup = () => (mouse.down = false);
+canvas.ontouchmove = ev => {
+  mouse.pos.x = ev.touches[0].clientX;
+  mouse.pos.y = ev.touches[0].clientY;
+};
+canvas.onmousedown = canvas.ontouchstart = () => (mouse.down = true);
+canvas.onmouseup = canvas.ontouchend = () => (mouse.down = false);
 canvas.onclick = () => plotRipplePoint();
 
 const sideLength = 50;
