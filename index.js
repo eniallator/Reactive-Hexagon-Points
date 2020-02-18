@@ -6,6 +6,10 @@ window.addEventListener(
   (resize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
+    ctx.fillStyle = "black";
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 7;
   })
 );
 
@@ -65,10 +69,6 @@ const applyRipple = point => {
   };
 };
 const getPoint = (x, y) => applyRipple(getHexGridPoint({ x, y }));
-
-ctx.fillStyle = "black";
-ctx.strokeStyle = "white";
-ctx.lineWidth = 7;
 
 function run() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
