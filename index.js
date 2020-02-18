@@ -15,16 +15,33 @@ window.addEventListener(
 
 resize();
 
+const mouse = {
+  down: false,
+  pos: {
+    x: 0,
+    y: 0
+  }
+};
+
+canvas.onmousemove = ev => {
+  mouse.pos.x = ev.clientX;
+  mouse.pos.y = ev.clientY;
+};
+canvas.onmousedown = () => (mouse.down = true);
+canvas.onmouseup = () => (mouse.down = false);
+canvas.onclick = () => plotRipplePoint();
+
 const sideLength = 50;
 const paddingHexNum = 5;
 
-const rippleMaxAge = 120;
+const rippleMaxAge = 2000;
+let lastTimeStamp = new Date().getTime();
 const numOscillations = 15;
 const force = 30;
 const influenceRadius = 1000;
 
-const updateTps = 10;
-const drawTps = 60;
+const updateTimeInterval = 100;
+let updateTimePassed = 0;
 
 const horizontalMultiplier = Math.sin((2 * Math.PI) / 3);
 const ripples = [];
@@ -101,16 +118,28 @@ function run() {
       }
     }
   }
+  const currTimeStamp = new Date().getTime();
+  const deltaTime = currTimeStamp - lastTimeStamp;
+  lastTimeStamp = currTimeStamp;
+  if (mouse.down) {
+    updateTimePassed += deltaTime;
+    while (updateTimePassed >= updateTimeInterval) {
+      updateTimePassed -= updateTimeInterval;
+      plotRipplePoint();
+    }
+  } else {
+    updateTimePassed = 0;
+  }
 
   for (let i = ripples.length - 1; i >= 0; i--) {
     const ripple = ripples[i];
-    ripple.age++;
+    ripple.age += deltaTime;
     if (ripple.age > rippleMaxAge) {
       ripples.shift(i, 1);
     }
   }
 
-  setTimeout(run, 1000 / drawTps);
+  requestAnimationFrame(run);
 }
 
 run();
@@ -118,24 +147,8 @@ run();
 const plotRipplePoint = () => {
   const rect = canvas.getBoundingClientRect();
   ripples.push({
-    x: mousePos.x - rect.left,
-    y: mousePos.y - rect.top,
+    x: mouse.pos.x - rect.left,
+    y: mouse.pos.y - rect.top,
     age: 0
   });
 };
-
-let currInterval = null;
-const mousePos = {
-  x: 0,
-  y: 0
-};
-
-canvas.addEventListener("mousemove", ev => {
-  mousePos.x = ev.clientX;
-  mousePos.y = ev.clientY;
-});
-
-canvas.onmousedown = () =>
-  (currInterval = setInterval(plotRipplePoint, 1000 / updateTps));
-canvas.onmouseup = () => clearInterval(currInterval);
-canvas.onclick = () => plotRipplePoint();
