@@ -13,17 +13,14 @@ const updateTimeInterval = 100;
 let updateTimePassed = 0;
 let lastTimeStamp = new Date().getTime();
 
-window.addEventListener(
-  "resize",
-  (resize = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+window.onresize = resize = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-    ctx.fillStyle = "black";
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 7;
-  })
-);
+  ctx.fillStyle = "black";
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 7;
+};
 
 resize();
 
@@ -43,8 +40,16 @@ canvas.ontouchmove = ev => {
   mouse.pos.x = ev.touches[0].clientX;
   mouse.pos.y = ev.touches[0].clientY;
 };
-canvas.onmousedown = canvas.ontouchstart = () => (mouse.down = true);
-canvas.onmouseup = canvas.ontouchend = () => (mouse.down = false);
+canvas.onmousedown = canvas.ontouchstart = ev => {
+  mouse.down = true;
+  if (!isNaN(ev.clientX) && !isNaN(ev.clientY)) {
+    mouse.pos.x = ev.clientX;
+    mouse.pos.y = ev.clientY;
+  }
+};
+canvas.onmouseup = canvas.ontouchend = () => {
+  mouse.down = false;
+};
 canvas.onclick = () => plotRipplePoint();
 
 const horizontalMultiplier = Math.sin((2 * Math.PI) / 3);
