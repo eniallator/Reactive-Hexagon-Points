@@ -13,7 +13,7 @@ const updateTimeInterval = 100;
 let updateTimePassed = 0;
 let lastTimeStamp = new Date().getTime();
 
-window.onresize = resize = () => {
+window.onresize = () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
@@ -22,25 +22,25 @@ window.onresize = resize = () => {
   ctx.lineWidth = 7;
 };
 
-resize();
+window.onresize();
 
 const mouse = {
   down: false,
   pos: {
     x: 0,
-    y: 0
-  }
+    y: 0,
+  },
 };
 
-canvas.onmousemove = ev => {
+canvas.onmousemove = (ev) => {
   mouse.pos.x = ev.clientX;
   mouse.pos.y = ev.clientY;
 };
-canvas.ontouchmove = ev => {
+canvas.ontouchmove = (ev) => {
   mouse.pos.x = ev.touches[0].clientX;
   mouse.pos.y = ev.touches[0].clientY;
 };
-canvas.onmousedown = canvas.ontouchstart = ev => {
+canvas.onmousedown = canvas.ontouchstart = (ev) => {
   mouse.down = true;
   if (!isNaN(ev.clientX) && !isNaN(ev.clientY)) {
     mouse.pos.x = ev.clientX;
@@ -55,16 +55,16 @@ canvas.onclick = () => plotRipplePoint();
 const horizontalMultiplier = Math.sin((2 * Math.PI) / 3);
 const ripples = [];
 const posMod = (a, b) => ((a % b) + b) % b;
-const getHexGridPoint = point => ({
+const getHexGridPoint = (point) => ({
   x:
     (point.x + (posMod(point.y, 4) > 1) / 2) *
     sideLength *
     2 *
     horizontalMultiplier,
-  y: (point.y - ~~(point.y / 2) / 2) * sideLength
+  y: (point.y - ~~(point.y / 2) / 2) * sideLength,
 });
 
-const applyRipple = point => {
+const applyRipple = (point) => {
   const offset = ripples.reduce(
     (acc, curr) => {
       const hypotenuseSqr = (point.x - curr.x) ** 2 + (point.y - curr.y) ** 2;
@@ -73,7 +73,7 @@ const applyRipple = point => {
       const hypotenuse = Math.sqrt(hypotenuseSqr);
       const normalDir = {
         x: (point.x - curr.x) / hypotenuse,
-        y: (point.y - curr.y) / hypotenuse
+        y: (point.y - curr.y) / hypotenuse,
       };
       const agePercent = curr.age / rippleMaxAge;
       const rippleOffsetMultiplier =
@@ -84,14 +84,14 @@ const applyRipple = point => {
 
       return {
         x: acc.x + normalDir.x * rippleOffsetMultiplier,
-        y: acc.y + normalDir.y * rippleOffsetMultiplier
+        y: acc.y + normalDir.y * rippleOffsetMultiplier,
       };
     },
     { x: 0, y: 0 }
   );
   return {
     x: point.x + offset.x,
-    y: point.y + offset.y
+    y: point.y + offset.y,
   };
 };
 const getPoint = (x, y) => applyRipple(getHexGridPoint({ x, y }));
@@ -111,13 +111,13 @@ function run() {
     ) {
       const offset = {
         x: 2 * (posMod(i, 4) <= 1) - 1,
-        y: posMod(i, 2) * 2 - 1
+        y: posMod(i, 2) * 2 - 1,
       };
       const point = getPoint(j, i);
       const otherPointsArray = [
         getPoint(j - offset.x, i + offset.y),
         getPoint(j, i + offset.y),
-        getPoint(j, i - offset.y)
+        getPoint(j, i - offset.y),
       ];
       for (let other of otherPointsArray) {
         ctx.beginPath();
@@ -158,6 +158,6 @@ const plotRipplePoint = () => {
   ripples.push({
     x: mouse.pos.x - rect.left,
     y: mouse.pos.y - rect.top,
-    age: 0
+    age: 0,
   });
 };
