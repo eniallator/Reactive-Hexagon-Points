@@ -6,9 +6,9 @@ const numPaddingHex = 5;
 
 const rippleMaxAge = 2000;
 const numOscillations = 15;
-const force = 30;
+const force = 12;
 const influenceRadius = 1000;
-const updateTimeInterval = 100;
+const updateTimeInterval = 20;
 
 let updateTimePassed = 0;
 let lastTimeStamp = new Date().getTime();
@@ -133,7 +133,7 @@ function run() {
   if (mouse.down) {
     updateTimePassed += deltaTime;
     while (updateTimePassed >= updateTimeInterval) {
-      updateTimePassed -= updateTimeInterval;
+      updateTimePassed %= updateTimeInterval;
       plotRipplePoint();
     }
   } else {
